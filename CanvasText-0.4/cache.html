@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>TextDrawer</title>
+<script src="CanvasText-0.4.js"></script>
+<script>
+// Definition of global vars
+var Canvas,Context;
+
+var CT = new CanvasText;
+window.onload = initExecution;
+
+function initExecution()
+{
+    Canvas = document.getElementById("canvas");
+    Context = Canvas.getContext("2d");
+
+    /**
+     * It's not necessary to define the configuration & classes
+     * every execution time, so we do this outside the interval.
+     */
+    CT.config({
+        canvas: Canvas,
+        context: Context,
+        fontFamily: "Verdana",
+        fontSize: "14px",
+        fontWeight: "normal",
+        fontColor: "#000",
+        lineHeight: "24"
+    });
+
+    CT.defineClass("blue",{
+        fontSize: "22px",
+        fontColor: "#29a1f1",
+        fontFamily: "Impact",
+        fontWeight: "normal"
+    });
+
+    CT.defineClass("pink",{
+        fontSize: "22px",
+        fontColor: "#ff5e99",
+        fontFamily: "Times new roman",
+        fontWeight: "bold"
+    });
+
+    // Set the interval
+    setInterval("initCanvasText()",100);
+}
+
+/*
+ * This function is executed every 100ms.
+ */
+function initCanvasText()
+{
+    // Clear canvas.
+    Context.clearRect(0, 0, Canvas.width, Canvas.height);
+
+    /*
+     * The styled text!
+     */
+    var text = 'In this example I don\'t care about <class="blue">blue</class> or <class="pink">pink</class>.\n\
+            I just care about the <class="blue">exciting</class> <class="pink">cache</class>\n\
+            feature!! <br />This text is being written every 100ms!';
+
+    /*
+     * Draw text!
+     */
+    CT.drawText({
+        text:text,
+        x: 0,
+        y: 30,
+        boxWidth:Canvas.width, //Yeah, of course you can do this :)!
+        cacheId: "Something" // Unique ID!
+    });
+}
+
+
+</script>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="320" style="border:1px solid #000;">
+        <p>Explorador no compatible</p>
+    </canvas>
+</body>
+</html>
