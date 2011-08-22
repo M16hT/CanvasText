@@ -1,0 +1,6 @@
+This object can render text in HTML 5 canvas objects.
+It can create a two dimension canvas object and renders text strings in it using given 
+text style class definitions embedded in the text similar to HTML tags.  The style classes
+can include definitions for rendering parameters like the text font, color, size and text
+alignment.  The text style definitions can be cached to avoid the overhead of recomputing
+the text styles.
