@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2011 Pere Monfort Pàmies (http://www.pmphp.net)
+ * Portions Copyright (c) 2011 Rudi Visser (http://www.rudiv.se)
  * Official site: http://www.canvastext.com
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
@@ -132,6 +133,18 @@ function CanvasText() {
             alert("You should specify a correct \"x\" & \"y\" axis value.");
             return false;
         }
+        // Check for the vertical alignment (requires boxHeight and verticalAlign set to value other than "none")
+        if (
+            (typeof (textInfo.verticalAlign) !== 'undefined' && textInfo.verticalAlign != 'none') &&
+            (typeof (textInfo.verticalAlign) === 'undefined' || !this.isNumber(textInfo.boxHeight))
+        ) {
+            alert("If using \"verticalAlign\" with a value other than 'none', \"boxHeight\" is required.");
+        }
+        // If we have a full box defined, offset textInfo.y by line height as it's defining the *actual* drawing box
+        if (typeof (textInfo.boxWidth) !== 'undefined' && typeof (textInfo.boxHeight) !== 'undefined' &&
+            this.isNumber(textInfo.boxWidth) && this.isNumber(textInfo.boxHeight)) {
+            textInfo.y += parseInt(this.lineHeight, 10);
+        }
         // Reset our cacheCanvas.
         this.bufferCanvas.width = this.bufferCanvas.width;
         // Set the color.
@@ -160,9 +173,9 @@ function CanvasText() {
      */
     this.drawStyledText = function (textInfo) {
         // Save the textInfo into separated vars to work more comfortably.
-        var text = textInfo.text, x = textInfo.x, y = textInfo.y;
+        var text = textInfo.text, x = textInfo.x, y = textInfo.y, verticalAlign = textInfo.verticalAlign;
         // Needed vars for automatic line break;
-        var splittedText, xAux, textLines = [], boxWidth = textInfo.boxWidth;
+        var splittedText, xAux, textLines = [], boxWidth = textInfo.boxWidth, boxHeight = textInfo.boxHeight;
         // Declaration of needed vars.
         var proFont = [], properties, property, propertyName, propertyValue, atribute;
         var classDefinition, proColor, proText, proShadow;
@@ -356,7 +369,7 @@ function CanvasText() {
                                 if (textLines[line].text !== undefined) {
                                     line++;
                                 }
-
+                                
                                 textLines[line] = {text: splittedText[k], linebreak: true};
                                 xAux += this.bufferContext.measureText(splittedText[k]).width;
                             }
@@ -369,6 +382,8 @@ function CanvasText() {
             if (textLines.length == 0) {
                 textLines.push({text: this.trim(proText) + " ", linebreak: false});
             }
+            
+            // Check if we're horizontally aligned
 
             // Let's draw the text
             for (n = 0; n < textLines.length; n++) {
@@ -383,6 +398,29 @@ function CanvasText() {
             }
 
             this.bufferContext.restore();
+        }
+        
+        if (verticalAlign !== undefined) {
+            // Store the current buffer as we're going to draw it relative to our box X / Y now
+            var tmpBuffer = document.createElement('canvas');
+            tmpBuffer.width = this.bufferCanvas.width;
+            tmpBuffer.height = this.bufferCanvas.height;
+            var imageData = this.bufferContext.getImageData(0, 0, this.bufferCanvas.width, this.bufferCanvas.height);
+            tmpBuffer.getContext('2d').putImageData(imageData, 0, 0);
+            // Actual text height
+            var textHeight = y;
+            // Calculate the new position on Y axis for drawing relative to box and offset by box start (textInfo.y)
+            var newDrawY = ((boxHeight / 2)  - (textHeight / 2));
+            // Redraw based on vertical alignment
+            this.bufferCanvas.width = this.bufferCanvas.width;
+            
+            if (textInfo.debugBox) {
+                this.bufferContext.save();
+                this.bufferContext.fillStyle = '#EEEEEE';
+                this.bufferContext.fillRect(textInfo.x, textInfo.y - parseInt(this.lineHeight, 10), textInfo.boxWidth, textInfo.boxHeight);
+                this.bufferContext.restore();
+            }
+            this.bufferContext.drawImage(tmpBuffer, 0, newDrawY);
         }
     };
 
