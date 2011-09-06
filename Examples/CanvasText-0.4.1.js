@@ -320,8 +320,9 @@ function CanvasText() {
 
             // Automatic Line break
             if (boxWidth !== undefined) {
+
                 // If returns true, it means we need a line break.
-                if (this.checkLineBreak(proText, boxWidth, x)) {
+                if (this.checkLineBreak(proText, (boxWidth+textInfo.x), x)) {
                     // Split text by words.
                     splittedText = this.trim(proText).split(" ");
 
@@ -338,7 +339,7 @@ function CanvasText() {
                         for (k = 0; k < splittedText.length; k++) {
                             splittedText[k] += " ";
                             // Check if the current text fits into the current line.
-                            if (!this.checkLineBreak(splittedText[k], boxWidth, xAux)) {
+                            if (!this.checkLineBreak(splittedText[k], (boxWidth+textInfo.x), xAux)) {
                                 // Current text fit into the current line. So we save it
                                 // to the current textLine.
                                 if (textLines[line].text == undefined) {
