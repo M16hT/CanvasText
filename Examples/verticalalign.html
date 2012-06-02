@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>TextDrawer</title>
+<script src="../CanvasText.js"></script>
+<script>
+// Definition of global vars
+var Canvas,Context;
+// Creation of the new CanvasText instance.
+var CT = new CanvasText;
+
+// Our canvas element must be loaded before the usage of CanvasText.
+window.onload = initCanvasText;
+
+function initCanvasText()
+{
+    Canvas = document.getElementById("canvas");
+    Context = Canvas.getContext("2d");
+
+    // Once window is loaded we set the configuration and the default styles.
+    CT.config({
+        canvas: Canvas,
+        context: Context,
+        fontFamily: "Verdana",
+        fontSize: "14px",
+        fontWeight: "normal",
+        fontColor: "#000",
+        lineHeight: "24"
+    });
+    /*
+     * Definition of some style classes.
+     */
+    CT.defineClass("blue",{
+        fontSize: "22px",
+        fontColor: "#29a1f1",
+        fontFamily: "Impact",
+        fontWeight: "normal",
+        textShadow: "2px 2px 2px #919191"
+    });
+
+    CT.defineClass("pink",{
+        fontSize: "22px",
+        fontColor: "#ff5e99",
+        fontFamily: "Times new roman",
+        fontWeight: "bold",
+        fontStyle: "italic"
+    });
+
+    // The text we want to draw.
+    var text = 'In this example I don\'t care about <class="blue">blue</class> or <class="pink">pink</class>.\n\
+                I just care about the new and <class="blue">exciting</class> <class="pink">vertical</class>\n\
+                <class="blue">alignment</class> feature!! ';
+
+    // Draw it!
+    CT.drawText({
+        text:text,
+        x: 0,
+        y: 0,
+        boxWidth: 300,
+        verticalAlign: 'middle',
+        boxHeight: 320,
+        debugBox: true
+    });
+}
+
+
+</script>
+</head>
+<body>
+    <canvas id="canvas" width="300" height="320" style="border:1px solid #000;">
+        <p>Explorador no compatible</p>
+    </canvas>
+</body>
+</html>

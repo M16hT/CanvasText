@@ -1,0 +1,4 @@
+CanvasText 0.5, 2011-09-01 (Rudi Visser <rudi@rudiv.se>)
+--------------------------
+- Added vertical alignment.
+- Added expectation of .boxHeight in textInfo object when using vertical alignment.
